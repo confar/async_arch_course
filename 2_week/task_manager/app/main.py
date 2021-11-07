@@ -4,20 +4,12 @@ import sys
 
 import uvloop
 from fastapi import FastAPI, __version__
-from fastapi.exceptions import RequestValidationError
 from loguru import logger
-from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api import api_router
-from app.api.exceptions import (
-    BaseAPIException,
-    generic_http_exception_handler,
-    on_api_exception,
-    validation_exception_handler,
-)
-from app.database import Database, DBHBase, DBLBase
-from app.log_handler import InterceptHandler
-from settings.config import LogTypeEnum, Settings, get_settings
+from task_manager.app.api import api_router
+from task_manager.app.database import Database, DBHBase, DBLBase
+from task_manager.app.log_handler import InterceptHandler
+from task_manager.settings.config import LogTypeEnum, Settings, get_settings
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -75,17 +67,11 @@ class Application:
         )
 
     def configure_hooks(self) -> None:
-        self.setup_exception_handlers()
         self.app.add_event_handler("startup", self.create_tables)
         self.app.add_event_handler("shutdown", self.close_database_pool)
 
     def register_urls(self) -> None:
         self.app.include_router(api_router, prefix="/api")
-
-    def setup_exception_handlers(self) -> None:
-        self.app.add_exception_handler(RequestValidationError, validation_exception_handler)
-        self.app.add_exception_handler(BaseAPIException, on_api_exception)
-        self.app.add_exception_handler(StarletteHTTPException, generic_http_exception_handler)
 
     def create_database_pool(self, settings: Settings) -> None:
         databases = {}
