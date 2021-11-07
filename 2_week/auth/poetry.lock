@@ -815,14 +815,6 @@ parso = ">=0.8.0,<0.9.0"
 qa = ["flake8 (==3.8.3)", "mypy (==0.782)"]
 testing = ["Django (<3.1)", "colorama", "docopt", "pytest (<6.0.0)"]
 
-[[package]]
-name = "jenkins-hash"
-version = "0.1.0"
-description = "Bob Jenkins algorithm as Python wrapper."
-category = "main"
-optional = false
-python-versions = "*"
-
 [package.dependencies]
 cffi = "*"
 
@@ -2103,10 +2095,6 @@ isort = [
 jedi = [
     {file = "jedi-0.18.0-py2.py3-none-any.whl", hash = "sha256:18456d83f65f400ab0c2d3319e48520420ef43b23a086fdc05dff34132f0fb93"},
     {file = "jedi-0.18.0.tar.gz", hash = "sha256:92550a404bad8afed881a137ec9a461fed49eca661414be45059329614ed0707"},
-]
-jenkins-hash = [
-    {file = "jenkins-hash-0.1.0.tar.gz", hash = "md5:7db08351333610e3f7378f0e55e6ec6d"},
-    {file = "jenkins_hash-0.1.0-cp38-cp38-linux_x86_64.whl", hash = "md5:c4cbe5d56352a4bcf8b810d98a3da7db"},
 ]
 loguru = [
     {file = "loguru-0.5.3-py3-none-any.whl", hash = "sha256:f8087ac396b5ee5f67c963b495d615ebbceac2796379599820e324419d53667c"},

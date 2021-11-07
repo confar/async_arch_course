@@ -32,12 +32,12 @@ class DBSettings(BaseSettings):
     ASYNC_MYSQL_DRIVER_NAME: str = "mysql+aiomysql"
     MYSQL_DB_READABLE_NAMES: list[str] = ["dbh", "dbl", "dbp_1", "dbp_2", "dbp_3", "dbp_4"]
 
-    DBH_MYSQL_HOST: str
-    DBH_MYSQL_PORT: str
-    DBH_MYSQL_USER: str = "user"
-    DBH_MYSQL_PASSWORD: str = "mysqlpwd"
-    DBH_MYSQL_DB: str = "fbhub"
-    DBH_MYSQL_POOL_SIZE: int = 5
+    DB_MYSQL_HOST: str
+    DB_MYSQL_PORT: str
+    DB_MYSQL_USER: str = "user"
+    DB_MYSQL_PASSWORD: str = "mysqlpwd"
+    DB_MYSQL_DB: str = "auth-db"
+    DB_MYSQL_POOL_SIZE: int = 5
 
     DBH_SQLALCHEMY_DATABASE_URI: Optional[AnyUrl] = None
     SYNC_DBH_SQLALCHEMY_DATABASE_URI: Optional[AnyUrl] = None

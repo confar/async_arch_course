@@ -1,7 +1,6 @@
 import random
 
 import factory
-from auth_utils.sid import create_sid
 
 from app.core.user_account.models import (
     LibraryUser,
@@ -44,50 +43,3 @@ class UserSessionFactory(DBLBaseModelFactory):
 
     class Meta:
         model = UserSession
-
-
-class UserProfileFactory(DBLBaseModelFactory):
-    user = factory.SubFactory(UserFactory, profile=None)
-    user_id = factory.LazyAttribute(lambda obj: obj.user.id)
-    birthday = factory.Faker("date_between", start_date="-40y", end_date="-8y")
-    avatar_picture_extension = factory.LazyAttribute(lambda _: random.choice(["jpg", None]))
-    nickname = factory.Faker("user_name", locale="ru_RU")
-
-    class Meta:
-        model = UserProfile
-
-
-class UserPhoneFactory(DBLBaseModelFactory):
-    user = factory.SubFactory(UserFactory, phone=None)
-    user_id = factory.LazyAttribute(lambda obj: obj.user.id)
-    country_code = factory.Faker("country_code")
-    number = factory.Faker("msisdn", locale="ru_RU")
-    is_verified = factory.Faker("pybool")
-    inverted_msisdn = factory.LazyAttribute(lambda o: o.number[::-1])
-
-    class Meta:
-        model = UserPhone
-
-
-class LibraryUserFactory(DBLBaseModelFactory):
-    library_id = factory.Faker("random_int")
-    user_id = factory.Faker("random_int")
-    is_blocked = 0
-
-    class Meta:
-        model = LibraryUser
-
-
-class UserSubscribesFactory(DBLBaseModelFactory):
-    user_id = factory.Faker("random_int")
-    service_id = factory.Faker("random_int")
-
-    class Meta:
-        model = UserSubscribes
-
-
-class ProfileBodyFactory(factory.DictFactory):
-    telegram = factory.Faker("text", max_nb_chars=50)
-    city_name = factory.Faker("text", max_nb_chars=50)
-    address = factory.Faker("text", max_nb_chars=50)
-    nickname = factory.Faker("text", max_nb_chars=50)
