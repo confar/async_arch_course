@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.post("/token", response_model=Token)
-async def assign_task(form_data: OAuth2PasswordRequestForm = Depends(),
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                                  user_service=Depends(get_user_service)):
     user = user_service.authenticate_user(form_data.username, form_data.password)
     if not user:
