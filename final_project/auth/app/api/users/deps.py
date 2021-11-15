@@ -1,13 +1,14 @@
+from aiokafka import AIOKafkaProducer
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from starlette import status
 from jose import JWTError, jwt
-from auth.app.api.base_deps import get_db_client
-from auth.app.api.users.serializers import TokenData, User
-from auth.app.core.users.constants import SECRET_KEY, ALGORITHM
-from auth.app.core.users.repositories import UserRepository
-from auth.app.core.users.services import UserService
-from auth.app.database import Database
+from app.api.base_deps import get_db_client, get_kafka_client
+from app.api.users.serializers import TokenData, User
+from app.core.users.constants import SECRET_KEY, ALGORITHM
+from app.core.users.repositories import UserRepository, UserEventRepository
+from app.core.users.services import UserService
+from app.database import Database
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -18,14 +19,21 @@ def get_user_repository(
     return UserRepository(db=db)
 
 
+def get_user_event_repository(
+    message_broker: AIOKafkaProducer = Depends(get_kafka_client, use_cache=True)
+) -> UserEventRepository:
+    return UserEventRepository(producer=message_broker)
+
+
 def get_user_service(
         repository: UserRepository = Depends(get_user_repository, use_cache=True),
+        event_repository: UserEventRepository = Depends(get_user_event_repository, use_cache=True),
 ) -> UserService:
-    return UserService(repository=repository)
+    return UserService(repository=repository, event_repository=event_repository)
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme),
-                           user_service = Depends(get_user_service)):
+                           user_service=Depends(get_user_service)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -48,4 +56,4 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user 
+    return current_user

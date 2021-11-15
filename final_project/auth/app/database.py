@@ -22,10 +22,6 @@ class Base:
         return getattr(inspect(cls).c, attr_name).name
 
 
-DBLBase: ConcreteBase = declarative_base(cls=Base)
-DBHBase: ConcreteBase = declarative_base(cls=Base)
-
-
 DBSessionFactory = Callable[..., AbstractContextManager[Session]]
 
 

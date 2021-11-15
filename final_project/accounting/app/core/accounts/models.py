@@ -4,9 +4,9 @@ from sqlalchemy.ext.declarative import ConcreteBase, declarative_base
 DBBase: ConcreteBase = declarative_base()
 
 
-class TaskORM(DBBase):
+class AccountORM(DBBase):
 
-    __tablename__ = "users"
+    __tablename__ = "accounts"
 
     id = Column(INTEGER(unsigned=True), autoincrement=True, primary_key=True)
     status = Column(VARCHAR(length=50))
