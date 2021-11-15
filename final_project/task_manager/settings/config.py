@@ -28,26 +28,26 @@ class SentrySettings(BaseSettings):
 
 
 class DBSettings(BaseSettings):
-    SYNC_MYSQL_DRIVER_NAME: str = "mysql+pymysql"
-    ASYNC_MYSQL_DRIVER_NAME: str = "mysql+aiomysql"
-    MYSQL_DB_READABLE_NAMES: list[str] = ["dbh", "dbl", "dbp_1", "dbp_2", "dbp_3", "dbp_4"]
+    SYNC_DRIVER_NAME: str = "postgresql"
+    ASYNC_DRIVER_NAME: str = "postgresql+asyncpg"
+    MYSQL_DB_READABLE_NAMES: list[str] = ["db"]
 
-    DB_MYSQL_HOST: str
-    DB_MYSQL_PORT: str
-    DB_MYSQL_USER: str = "user"
-    DB_MYSQL_PASSWORD: str = "mysqlpwd"
-    DB_MYSQL_DB: str = "auth-db"
-    DB_MYSQL_POOL_SIZE: int = 5
+    DB_HOST: str
+    DB_PORT: str
+    DB_USER: str = "user"
+    DB_PASSWORD: str = "mysqlpwd"
+    DB_NAME: str = "task-manager-db"
+    DB_POOL_SIZE: int = 5
 
-    DBH_SQLALCHEMY_DATABASE_URI: Optional[AnyUrl] = None
-    SYNC_DBH_SQLALCHEMY_DATABASE_URI: Optional[AnyUrl] = None
+    DB_SQLALCHEMY_DATABASE_URI: Optional[AnyUrl] = None
+    SYNC_DB_SQLALCHEMY_DATABASE_URI: Optional[AnyUrl] = None
 
     @staticmethod
     def _make_db_uri(
-        prefix: str,
-        driver: str,
-        value: Optional[str],
-        values: dict[str, Any],
+            prefix: str,
+            driver: str,
+            value: Optional[str],
+            values: dict[str, Any],
     ) -> str:
         """
         Возвращает uri для заданной базы
@@ -65,7 +65,7 @@ class DBSettings(BaseSettings):
         url = str(
             URL.create(
                 drivername=driver,
-                database=values.get(f"{prefix}_DB"),
+                database=values.get(f"{prefix}_NAME"),
                 username=values.get(f"{prefix}_USER"),
                 password=values.get(f"{prefix}_PASSWORD"),
                 host=values.get(f"{prefix}_HOST"),
@@ -74,20 +74,20 @@ class DBSettings(BaseSettings):
         )
         return url
 
-    @validator("DBH_SQLALCHEMY_DATABASE_URI", pre=True)
-    def dbh_mysql_dsn(cls, v: Optional[str], values: dict[str, Any]) -> Any:
+    @validator("DB_SQLALCHEMY_DATABASE_URI", pre=True, check_fields=False )
+    def db_dsn(cls, v: Optional[str], values: dict[str, Any]) -> Any:
         return cls._make_db_uri(
-            prefix="DBH_MYSQL",
-            driver=values["ASYNC_MYSQL_DRIVER_NAME"],
+            prefix="DB",
+            driver=values["ASYNC_DRIVER_NAME"],
             value=v,
             values=values,
         )
 
-    @validator("SYNC_DBH_SQLALCHEMY_DATABASE_URI", pre=True)
-    def sync_dbh_mysql_dsn(cls, v: Optional[str], values: dict[str, Any]) -> Any:
+    @validator("SYNC_DB_SQLALCHEMY_DATABASE_URI", pre=True, check_fields=False )
+    def sync_db_dsn(cls, v: Optional[str], values: dict[str, Any]) -> Any:
         return cls._make_db_uri(
-            prefix="DBH_MYSQL",
-            driver=values["SYNC_MYSQL_DRIVER_NAME"],
+            prefix="DB",
+            driver=values["SYNC_DRIVER_NAME"],
             value=v,
             values=values,
         )
