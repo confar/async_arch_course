@@ -1,9 +1,9 @@
 import enum
 import uuid
-from typing import Dict, Any
+from typing import Any
 
-from sqlalchemy import Column, INTEGER, VARCHAR, DATETIME, func, ForeignKey, TEXT
-from sqlalchemy.dialects.postgresql import ENUM, UUID, TIMESTAMP
+from sqlalchemy import Column, INTEGER, VARCHAR, func, ForeignKey, TEXT
+from sqlalchemy.dialects.postgresql import UUID, TIMESTAMP, ENUM
 from sqlalchemy.ext.declarative import ConcreteBase, declarative_base
 
 DBBase: ConcreteBase = declarative_base()
@@ -21,7 +21,16 @@ class RoleEnum(str, DisplayValuesMixin, enum.Enum):
     admin = "admin"
     analytics = "analytics"
     worker = "worker"
+    manager = "manager"
     accounting = "accounting"
+
+
+class StatusEnum(str, DisplayValuesMixin, enum.Enum):
+    open = "open"
+    done = "done"
+
+ADMIN_ROLES = {RoleEnum.admin.value, RoleEnum.manager.value}
+ASSIGNABLE_ROLES = {RoleEnum.analytics.value, RoleEnum.worker.value, RoleEnum.accounting.value}
 
 
 class TaskORM(DBBase):
@@ -29,7 +38,7 @@ class TaskORM(DBBase):
     __tablename__ = "tasks"
 
     id = Column(INTEGER(), autoincrement=True, primary_key=True)
-    status = Column(VARCHAR(length=50))
+    status = Column(ENUM(*StatusEnum.display_values(), name='Role'), doc="Тип роли")
     public_id = Column(UUID(as_uuid=True), default=uuid.uuid4)
 
     assignee_id = Column(INTEGER(), ForeignKey("workers.id"))
@@ -42,7 +51,7 @@ class TaskORM(DBBase):
 
 class WorkerORM(DBBase):
     __tablename__ = "workers"
-    
+
     id = Column(INTEGER(), autoincrement=True, primary_key=True)
     public_id = Column(TEXT())
     role = Column(ENUM(*RoleEnum.display_values(), name='Role'), doc="Тип роли")
