@@ -1,6 +1,8 @@
 import json
 from dataclasses import dataclass
+from uuid import UUID
 
+import aiokafka
 from aiokafka import AIOKafkaProducer
 from sqlalchemy import select
 
@@ -26,15 +28,28 @@ class UserRepository:
             await session.refresh(user)
         return user
 
+    async def get_user_by_public_id(self, public_id: str):
+        query = select(UserORM).filter_by(public_id=public_id)
+        async with self.db.session() as session:
+            results = await session.execute(query)
+            return results.scalar_one()
+
 
 @dataclass
 class UserEventRepository:
     producer: AIOKafkaProducer
 
-    async def produce_user_registered_event(self, public_id: str, role: RoleEnum):
-        await self.producer.start()
-        data = {"public_id": public_id, "role": role.value}
+    @staticmethod
+    def serializer(value):
+        return json.dumps(value).encode()
+
+    async def produce_user_registered_event(self, public_id: UUID, role):
+        producer = aiokafka.AIOKafkaProducer(bootstrap_servers='localhost:9092',
+                                             value_serializer=self.serializer,
+                                             compression_type="gzip")
+        await producer.start()
+        data = {"public_id": public_id.hex, "role": role}
         try:
-            await self.producer.send_and_wait("users.registered", data)
+            await producer.send_and_wait("users.registered", data)
         finally:
-            await self.producer.stop()
+            await producer.stop()

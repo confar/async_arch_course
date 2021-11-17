@@ -1,9 +1,12 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from typing import Optional
+
 from passlib.context import CryptContext
 from jose import jwt
 from sqlalchemy.exc import NoResultFound
 from app.core.users.constants import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.core.users.models import UserORM
 from app.core.users.repositories import UserRepository, UserEventRepository
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -41,3 +44,6 @@ class UserService:
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
+
+    async def get_user_by_public_id(self, public_id: str) -> Optional[UserORM]:
+        return await self.repository.get_user_by_public_id(public_id)

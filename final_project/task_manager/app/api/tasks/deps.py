@@ -1,7 +1,12 @@
-from app.api.rest.base_deps import get_db_client
-from app.api.rest.tasks.serializers import User
+from typing import NoReturn, Union
 
-from app.api.rest.base_deps import get_kafka_client
+from sqlalchemy.exc import NoResultFound
+
+from app.api.base_deps import get_db_client
+from app.api.tasks.serializers import UserSerializer
+
+from app.api.base_deps import get_kafka_client
+from app.core.tasks.models import TaskORM
 from app.core.tasks.services import TaskService
 from app.database import Database
 from fastapi import Depends, HTTPException
@@ -15,6 +20,7 @@ SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 def get_task_repository(
         db: Database = Depends(get_db_client, use_cache=True),
@@ -49,13 +55,20 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    worker = task_service.get_worker(public_id=public_id)
+    worker = await task_service.get_worker_by_id(public_id=public_id)
     if worker is None:
         raise credentials_exception
     return worker
 
 
-async def get_current_active_user(current_user: User = Depends(get_current_user)):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
+async def get_task_or_404(
+        task_id: int,
+        service: TaskService = Depends(get_task_service, use_cache=True),
+) -> Union[TaskORM, NoReturn]:
+    task = await service.get_task_by_id(task_id)
+    if not task:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Task Not Found",
+        )
+    return task
