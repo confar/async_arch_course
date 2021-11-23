@@ -2,22 +2,17 @@ import asyncio
 import json
 import logging
 import sys
-from typing import Any
 
 import aiokafka
 import uvloop
-from aiokafka import AIOKafkaConsumer
 from fastapi import FastAPI, __version__
 from loguru import logger
 
 from app.api import api_router
-from app.core.tasks.repositories import TaskRepository, TaskEventRepository
-from app.core.tasks.services import TaskService
+from app.core.tasks.models import DBBase
 from app.database import Database
 from app.log_handler import InterceptHandler
 from settings.config import LogTypeEnum, Settings, get_settings
-
-from app.core.tasks.models import DBBase
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

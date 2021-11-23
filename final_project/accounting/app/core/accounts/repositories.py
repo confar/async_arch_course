@@ -20,7 +20,7 @@ class AccountRepository:
         transaction = TransactionORM(type=TransactionType.withdraw.value,
                                      task_id=task.id,
                                      account_id=account.id,
-                                     delta=random.randint(-10, -20), 
+                                     delta=random.randrange(-20, -10),
                                      cycle_id=account.current_billing_cycle_id)
         async with self.db.session() as session:
             session.add(transaction)
@@ -65,7 +65,7 @@ class AccountRepository:
             return results.scalar()
 
     async def create_account(self, public_id: str, role: str, email: str) -> AccountORM:
-        cycle = self.create_billing_cycle()
+        cycle = await self.create_billing_cycle()
         account = AccountORM(public_id=public_id, role=role, balance=0, current_billing_cycle_id=cycle.id, email=email)
         async with self.db.session() as session:
             session.add(account)
@@ -117,9 +117,9 @@ class AccountRepository:
     async def get_account_transactions_for_cycle_ids(self, cycle_ids: list[int]) -> list[TransactionORM]:
         query = (select(TransactionORM)
                  .filter(TransactionORM.cycle_id.in_(cycle_ids),
-                                                    TransactionORM.type.in_([TransactionType.deposit.value,
-                                                                            TransactionType.withdraw.value])
-                .options(joinedload(TransactionORM.task))))
+                         TransactionORM.type.in_([TransactionType.deposit.value,
+                                                  TransactionType.withdraw.value]))
+                 .options(joinedload(TransactionORM.task)))
         async with self.db.session() as session:
             results = await session.execute(query)
             return results.scalars()
@@ -132,7 +132,7 @@ class AccountRepository:
 
     async def get_cycle_ids_for_today(self) -> list[int]:
         now = datetime.datetime.now()
-        from_dt = datetime.datetime.combine(now, datetime.time.max)
+        from_dt = datetime.datetime.combine(now, datetime.time.min)
         till_dt = datetime.datetime.combine(now, datetime.time.max)
         query = select(BillingCycleORM.id).filter(BillingCycleORM.created_at >= from_dt,
                                                   BillingCycleORM.created_at <= till_dt)
@@ -157,7 +157,7 @@ class AccountRepository:
         return cycle
 
     async def create_payment(self, amount: int) -> PaymentORM:
-        payment = PaymentORM(amount=amount, status=PaymentStatus.initiated)
+        payment = PaymentORM(amount=amount, status=PaymentStatus.initiated.value)
         async with self.db.session() as session:
             session.add(payment)
             await session.commit()

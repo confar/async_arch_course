@@ -13,13 +13,14 @@ from app.database import Database
 from app.log_handler import InterceptHandler
 from settings.config import LogTypeEnum, Settings, get_settings
 
-from app.core.tasks.models import DBBase
+from app.core.accounts.models import DBBase
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def serializer(value):
     return json.dumps(value).encode()
+
 
 class Application:
     def setup(self) -> FastAPI:
@@ -36,13 +37,13 @@ class Application:
         )
         self.app.state.config = settings
         self.create_database_pool(settings)
-        loop = asyncio.get_event_loop()
-        self.create_broker_pool(loop)
-        self.configure_logging(settings)
 
         self.register_urls()
         self.configure_hooks()
 
+        loop = asyncio.get_event_loop()
+        self.create_broker_pool(loop)
+        self.configure_logging(settings)
         return self.app
 
     @staticmethod
@@ -79,7 +80,6 @@ class Application:
         self.app.add_event_handler("startup", self.create_tables)
         self.app.add_event_handler("shutdown", self.close_database_pool)
 
-
     def register_urls(self) -> None:
         self.app.include_router(api_router, prefix="/api")
 
@@ -109,6 +109,7 @@ class Application:
                 continue
 
     async def create_tables(self) -> None:
+        print('creating tables')
         await self.app.state.db.create_tables_by_base(DBBase)
 
     @staticmethod

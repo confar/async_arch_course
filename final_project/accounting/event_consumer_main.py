@@ -6,7 +6,7 @@ from aiokafka import AIOKafkaConsumer
 
 from app.core.accounts.repositories import AccountRepository
 from app.core.accounts.services import AccountService
-from app.main import get_app
+from main import get_app
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ async def consume():
     app = get_app()
     consumer = AIOKafkaConsumer(
         'users.created', 'tasks.assigned', 'tasks.completed', 'tasks.created',
-        group_id="my_group",
+        group_id="my_group1",
         bootstrap_servers='localhost:9092',
     )
     # если assigned раньше чем tasks.created, то либо пустой таск, либо ретрай события created
@@ -38,4 +38,5 @@ async def consume():
     finally:
         pass
 
-loop.run_until_complete(consume())
+if __name__ == '__main__':
+    loop.run_until_complete(consume())

@@ -1,5 +1,6 @@
 from typing import NoReturn, Union
 
+from aiokafka import AIOKafkaProducer
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -25,14 +26,14 @@ def get_task_repository(
 
 
 def get_task_event_repository(
-    message_broker: Depends(get_kafka_client, use_cache=True)
+    message_broker: AIOKafkaProducer = Depends(get_kafka_client, use_cache=True)
 ):
     return TaskEventRepository(producer=message_broker)
 
 
 def get_task_service(
         repository: TaskRepository = Depends(get_task_repository, use_cache=True),
-        event_repository: TaskEventRepository = Depends(get_task_repository, use_cache=True),
+        event_repository: TaskEventRepository = Depends(get_task_event_repository, use_cache=True),
 ) -> TaskService:
     return TaskService(repository=repository, event_repository=event_repository)
 
