@@ -13,7 +13,6 @@ class TaskORM(DBBase):
 
     assignee_id = Column("assignee_id", INTEGER(unsigned=True), ForeignKey("workers.id"))
     creator_id = Column("creator_id", INTEGER(unsigned=True), ForeignKey("workers.id"))
-
     description = Column(VARCHAR(length=100), nullable=True)
 
     created_at = Column("creat_date", DATETIME, nullable=True, server_default=func.now())

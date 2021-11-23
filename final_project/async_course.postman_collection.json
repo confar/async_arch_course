@@ -1,0 +1,477 @@
+{
+	"info": {
+		"_postman_id": "65ea7f56-abfc-4c08-a891-3816c0a687e2",
+		"name": "async_course",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8000/api/token",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "user37@mail.ru",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123456",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8001/api/tasks/",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWJsaWNfaWQiOiIxOTViM2MxODJhMzM0YWUzOTg2NjU4NTRmNTM2OTYwNSIsImV4cCI6MTYzNzY1NjIwN30.FWDS3eAxBcYlHSO8VTBWRiaSeBB7DY9k1jDe4VgbgjE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"assignee_id\": \"195b3c182a334ae398665854f5369605\", \"description\": \"Make an auth service\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8001/api/tasks/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"api",
+						"tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8001/api/my-tasks/",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWJsaWNfaWQiOiIxOTViM2MxODJhMzM0YWUzOTg2NjU4NTRmNTM2OTYwNSIsImV4cCI6MTYzNzY1NjIwN30.FWDS3eAxBcYlHSO8VTBWRiaSeBB7DY9k1jDe4VgbgjE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8001/api/my-tasks/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"api",
+						"my-tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8001/api/my-tasks/",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWJsaWNfaWQiOiIxOTViM2MxODJhMzM0YWUzOTg2NjU4NTRmNTM2OTYwNSIsImV4cCI6MTYzNzY1NjIwN30.FWDS3eAxBcYlHSO8VTBWRiaSeBB7DY9k1jDe4VgbgjE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"assignee_id\": \"4f18910a0f074cbc8c84cc00e2607b91\", \"description\": \"Make an auth service\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8001/api/tasks/my_tasks/11/mark-done",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"api",
+						"tasks",
+						"my_tasks",
+						"11",
+						"mark-done"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8001/api/tasks/assign/",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWJsaWNfaWQiOiIxOTViM2MxODJhMzM0YWUzOTg2NjU4NTRmNTM2OTYwNSIsImV4cCI6MTYzNzY1NjIwN30.FWDS3eAxBcYlHSO8VTBWRiaSeBB7DY9k1jDe4VgbgjE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"assignee_id\": \"4f18910a0f074cbc8c84cc00e2607b91\", \"description\": \"Make an auth service\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8001/api/tasks/assign/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"api",
+						"tasks",
+						"assign",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8001/api/accounts/my-transactions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWJsaWNfaWQiOiIxOTViM2MxODJhMzM0YWUzOTg2NjU4NTRmNTM2OTYwNSIsImV4cCI6MTYzNzY1NjIwN30.FWDS3eAxBcYlHSO8VTBWRiaSeBB7DY9k1jDe4VgbgjE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8002/api/accounts/my-transactions/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8002",
+					"path": [
+						"api",
+						"accounts",
+						"my-transactions",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8002/api/accounts/total-earned/",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWJsaWNfaWQiOiJmMTIyMjRlMDFmZGM0NTU2YmQzMDBhYzc3Yjc4YmJiMiIsImV4cCI6MTYzNzY1MzU0N30.uK3hy9ibnWRozmSHSBN-UJokVFgIUpXo_tLRGyOdoxc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8002/api/accounts/total-earned/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8002",
+					"path": [
+						"api",
+						"accounts",
+						"total-earned",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8002/api/accounts/me/",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWJsaWNfaWQiOiIxOTViM2MxODJhMzM0YWUzOTg2NjU4NTRmNTM2OTYwNSIsImV4cCI6MTYzNzY1NjIwN30.FWDS3eAxBcYlHSO8VTBWRiaSeBB7DY9k1jDe4VgbgjE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8002/api/accounts/me/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8002",
+					"path": [
+						"api",
+						"accounts",
+						"me",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8002/api/accounts/total-earned/",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWJsaWNfaWQiOiJmMTIyMjRlMDFmZGM0NTU2YmQzMDBhYzc3Yjc4YmJiMiIsImV4cCI6MTYzNzY1MzU0N30.uK3hy9ibnWRozmSHSBN-UJokVFgIUpXo_tLRGyOdoxc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\"Chromium\";v=\"92\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"92\""
+					},
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "x-csrftoken",
+						"value": "gQy8mfs5OiCfYZ54Sdp6uiadQV3CJreRnVltommbhhoiQgmPLEXUL5rlBbiJjt0o"
+					},
+					{
+						"key": "accept-language",
+						"value": "et"
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36"
+					},
+					{
+						"key": "content-Type",
+						"value": "application/json; charset=UTF-8"
+					},
+					{
+						"key": "Origin",
+						"value": "https://mybook.dev"
+					},
+					{
+						"key": "Sec-Fetch-Site",
+						"value": "same-origin"
+					},
+					{
+						"key": "Sec-Fetch-Mode",
+						"value": "cors"
+					},
+					{
+						"key": "Sec-Fetch-Dest",
+						"value": "empty"
+					},
+					{
+						"key": "Referer",
+						"value": "https://mybook.dev/payments/test_form_payu/"
+					},
+					{
+						"key": "Cookie",
+						"value": "network_carrier=None; _ga=GA1.3.1987250506.1611321081; _ga=GA1.2.1987250506.1611321081; _ym_uid=161132108112109519; flocktory-uuid=04bf14c9-09a5-466b-8224-13f5b8090a30-1; securitytoken=8868b20e8b573ce5b20e6a58d952e89a; _gid=GA1.3.2142293893.1630380005; _ym_d=1630380005; _gid=GA1.2.2142293893.1630380005; _ym_visorc=w; _fbp=fb.1.1630380005348.1563207865; _ym_isad=1; csrftoken=gQy8mfs5OiCfYZ54Sdp6uiadQV3CJreRnVltommbhhoiQgmPLEXUL5rlBbiJjt0o; sessionid=9639tqfw3iq7ugu3e2a4qccbsw694hyi; showCookieBanner={%22show%22:true%2C%22main%22:true%2C%22preferences%22:true%2C%22analytics%22:true%2C%22regionName%22:%22ESTONIA%22}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"assignee_id\": \"4f18910a0f074cbc8c84cc00e2607b91\", \"description\": \"Make an auth service\"}"
+				},
+				"url": {
+					"raw": "http://localhost:8002/api/analytics/dashboard/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8002",
+					"path": [
+						"api",
+						"analytics",
+						"dashboard",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8002/api/accounts/total-earned/",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWJsaWNfaWQiOiIxOTViM2MxODJhMzM0YWUzOTg2NjU4NTRmNTM2OTYwNSIsImV4cCI6MTYzNzY1NjIwN30.FWDS3eAxBcYlHSO8VTBWRiaSeBB7DY9k1jDe4VgbgjE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8002/api/analytics/most-expensive-task/?date_from=2021-11-23&date_till=2021-11-24",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8002",
+					"path": [
+						"api",
+						"analytics",
+						"most-expensive-task",
+						""
+					],
+					"query": [
+						{
+							"key": "date_from",
+							"value": "2021-11-23"
+						},
+						{
+							"key": "date_till",
+							"value": "2021-11-24"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

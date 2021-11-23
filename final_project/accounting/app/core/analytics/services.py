@@ -4,10 +4,7 @@ from dataclasses import dataclass
 from app.core.accounts.constants import ACCOUNTING_ADMIN_ROLES, ADMIN_ROLES
 from app.core.analytics.repositories import AnalyticsRepository
 
-
-class NotSufficientPrivileges(Exception):
-    pass
-
+from app.core.accounts.services import NotSufficientPrivileges
 
 logger = logging.getLogger(__name__)
 

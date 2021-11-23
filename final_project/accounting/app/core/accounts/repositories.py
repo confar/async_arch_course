@@ -90,8 +90,9 @@ class AccountRepository:
             await session.refresh(account)
         return account
 
-    async def create_task(self, public_id: str, description: str) -> TaskORM:
-        task = TaskORM(public_id=public_id, description=description, costs=random.randint(20, 40))
+    async def create_task(self, public_id: str, description: str, title: str, jira_id: str) -> TaskORM:
+        task = TaskORM(public_id=public_id, description=description, costs=random.randint(20, 40),
+                       title=title, jira_id=jira_id)
         async with self.db.session() as session:
             session.add(task)
             await session.commit()

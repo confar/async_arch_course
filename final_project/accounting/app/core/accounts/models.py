@@ -46,6 +46,8 @@ class TaskORM(DBBase):
     public_id = Column(TEXT())
     description = Column(TEXT())
     costs = Column(INTEGER())
+    title = Column(VARCHAR(length=100), nullable=True)
+    jira_id = Column(VARCHAR(length=100), nullable=True)
     created_at = Column(TIMESTAMP, server_default=func.now())
 
 

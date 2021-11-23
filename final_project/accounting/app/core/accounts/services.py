@@ -63,8 +63,8 @@ class AccountService:
     async def create_account(self, public_id: str, role: str, email: str):
         return await self.repository.create_account(public_id, role, email)
 
-    async def create_task(self, public_id, description):
-        return await self.repository.create_task(public_id, description)
+    async def create_task(self, public_id, description, title, jira_id):
+        return await self.repository.create_task(public_id, description, title, jira_id)
 
     async def send_payment_email(self, amount, email):
         await send_mail_async('uberpopug@mail.ru',
