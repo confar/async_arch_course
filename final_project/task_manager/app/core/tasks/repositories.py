@@ -15,9 +15,9 @@ from app.core.tasks.models import TaskORM, WorkerORM, ASSIGNABLE_ROLES, StatusEn
 class TaskRepository:
     db: Database
 
-    async def create_task(self, creator_id, description, assignee_id):
+    async def create_task(self, creator_id, description, assignee_id, title, jira_id):
         task = TaskORM(creator_id=creator_id, description=description,
-                       assignee_id=assignee_id, status=StatusEnum.open.value)
+                       assignee_id=assignee_id, status=StatusEnum.open.value, title=title, jira_id=jira_id)
         async with self.db.session() as session:
             session.add(task)
             await session.commit()
@@ -109,12 +109,12 @@ class TaskEventRepository:
         finally:
             await producer.stop()
 
-    async def produce_task_created_event(self, task_id: UUID, description):
+    async def produce_task_created_event(self, task_id: UUID, description: str, title: str, jira_id: str):
         producer = aiokafka.AIOKafkaProducer(bootstrap_servers='localhost:9092',
                                              value_serializer=self.serializer,
                                              compression_type="gzip")
         await producer.start()
-        data = {"task_id": task_id.hex, "description": description}
+        data = {"task_id": task_id.hex, "description": description, "title": title, "jira_id": jira_id}
         try:
             await producer.send_and_wait("tasks.created", data)
         finally:

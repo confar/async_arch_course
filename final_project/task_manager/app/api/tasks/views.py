@@ -26,7 +26,8 @@ async def assign_tasks(user=Depends(get_current_user),
 async def create_task(body: AddTaskSerializer,
                       user=Depends(get_current_user),
                       task_service=Depends(get_task_service)):
-    task = await task_service.create_task(creator_id=user.id, description=body.description, assignee_id=body.assignee_id)
+    task = await task_service.create_task(creator_id=user.id, description=body.description,
+                                          assignee_id=body.assignee_id, title=body.title, jira_id=body.jira_id)
     return task
 
 

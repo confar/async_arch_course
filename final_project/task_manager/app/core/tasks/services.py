@@ -26,14 +26,15 @@ class TaskService:
     repository: TaskRepository
     event_repository: TaskEventRepository
 
-    async def create_task(self, creator_id: int, description: str, assignee_id: str):
+    async def create_task(self, creator_id: int, description: str, assignee_id: str, title: str, jira_id: str):
         assignee = await self.repository.get_worker_by_id(assignee_id)
         if assignee in ADMIN_ROLES:
             raise CantAssignAdminsError()
         task = await self.repository.create_task(creator_id=creator_id, description=description,
-                                                 assignee_id=assignee.id)
+                                                 assignee_id=assignee.id, title=title, jira_id=jira_id)
         await self.event_repository.produce_task_created_event(task_id=task.public_id,
-                                                               description=task.description)
+                                                               description=task.description,
+                                                               title=task.title, jira_id=task.jira_id)
         await self.event_repository.produce_task_assigned_event(task_id=task.public_id,
                                                                 user_id=assignee.public_id)
         return task

@@ -29,6 +29,7 @@ class StatusEnum(str, DisplayValuesMixin, enum.Enum):
     open = "open"
     done = "done"
 
+
 ADMIN_ROLES = {RoleEnum.admin.value, RoleEnum.manager.value}
 ASSIGNABLE_ROLES = {RoleEnum.analytics.value, RoleEnum.worker.value, RoleEnum.accounting.value}
 
@@ -40,6 +41,8 @@ class TaskORM(DBBase):
     id = Column(INTEGER(), autoincrement=True, primary_key=True)
     status = Column(ENUM(*StatusEnum.display_values(), name='Status'), doc="Статус задачи")
     public_id = Column(UUID(as_uuid=True), default=uuid.uuid4)
+    title = Column(VARCHAR(length=100), nullable=True)
+    jira_id = Column(VARCHAR(length=100), nullable=True)
 
     assignee_id = Column(INTEGER(), ForeignKey("workers.id"))
     creator_id = Column(INTEGER(), ForeignKey("workers.id"))

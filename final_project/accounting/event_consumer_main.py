@@ -30,7 +30,8 @@ async def consume():
             if msg.topic == 'users.created':
                 await account_service.create_account(public_id=data['user_id'], role=data['role'], email=data['email'])
             elif msg.topic == 'tasks.created':
-                await account_service.create_task(public_id=data['task_id'], description=data['description'])
+                await account_service.create_task(public_id=data['task_id'], description=data['description'],
+                                                  title=data.get('title'), jira_id=data.get('jira_id'))
             elif msg.topic == 'tasks.assigned':
                 await account_service.process_assigned_task(task_id=data['task_id'], account_id=data['user_id'])
             elif msg.topic == 'tasks.completed':
