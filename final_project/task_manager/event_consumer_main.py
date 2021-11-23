@@ -6,7 +6,7 @@ from aiokafka import AIOKafkaConsumer
 
 from app.core.tasks.repositories import TaskRepository, TaskEventRepository
 from app.core.tasks.services import TaskService
-from app.main import get_app
+from main import get_app
 
 logger = logging.getLogger(__name__)
 

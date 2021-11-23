@@ -32,7 +32,8 @@ class Application:
         )
         self.app.state.config = settings
         self.create_database_pool(settings)
-        self.create_broker_pool()
+        loop = asyncio.get_event_loop()
+        self.create_broker_pool(loop)
         self.configure_logging(settings)
 
         self.register_urls()
@@ -109,10 +110,11 @@ class Application:
     def serializer(value):
         return json.dumps(value).encode()
 
-    def create_broker_pool(self):
+    def create_broker_pool(self, loop):
         producer = aiokafka.AIOKafkaProducer(bootstrap_servers='localhost:9092',
                                              value_serializer=self.serializer,
-                                             compression_type="gzip")
+                                             compression_type="gzip", 
+                                             loop=loop)
         self.app.state.event_producer = producer
 
 
