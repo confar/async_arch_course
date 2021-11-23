@@ -3,20 +3,13 @@ version: "3.9"
 x-postgresql-db: &postgresql-db
   image: postgres:14.1
   restart: always
-  logging:
-    driver: none
   environment:
     - POSTGRES_USER=user
     - POSTGRES_PASSWORD=mysqlpwd
-    - POSTGRES_DB=task-manager-db
+    - POSTGRES_DB=accounting-db
 
 services:
   db:
     <<: *postgresql-db
     ports:
-      - "5432:5432"
-    volumes:
-      - postgresql_accounting_volume:/var/lib/postgresql/data/
-
-volumes:
-  postgresql_accounting_volume:
+      - "5435:5432"

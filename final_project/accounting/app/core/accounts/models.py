@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID, TIMESTAMP, ENUM
 from sqlalchemy.ext.declarative import ConcreteBase, declarative_base
 from sqlalchemy.orm import relationship
 
-from app.core.accounts.constants import TransactionType, Role, Status
+from app.core.accounts.constants import TransactionType, Role, Status, PaymentStatus
 
 DBBase: ConcreteBase = declarative_base()
 
@@ -25,7 +25,7 @@ class TransactionORM(DBBase):
     type = Column(ENUM(*TransactionType.display_values(), name='Тип транзакции'))
     created_at = Column(TIMESTAMP, server_default=func.now())
 
-    task = relationship("task", backref="transactions")
+    task = relationship("TaskORM", backref="transactions")
 
 
 class AccountORM(DBBase):
@@ -37,7 +37,7 @@ class AccountORM(DBBase):
     role = Column(ENUM(*Role.display_values(), name='Role'), doc="Тип роли")
     balance = Column(INTEGER())
     current_billing_cycle_id = Column(ForeignKey('billing_cycles.id'))
-    created_at = Column(TIMESTAMP, server_default=func.now())
+    created_at = Column(TIMESTAMP, server_default=func.now(), nullable=True)
 
 
 class TaskORM(DBBase):
@@ -52,7 +52,7 @@ class TaskORM(DBBase):
 class PaymentORM(DBBase):
     __tablename__ = "payments"
     id = Column(INTEGER(), autoincrement=True, primary_key=True)
-    status = Column(ENUM(*Status.display_values(), name='Тип цикла'))
+    status = Column(ENUM(*PaymentStatus.display_values(), name='Статус платежа'))
     amount = Column(INTEGER())
     created_at = Column(TIMESTAMP, server_default=func.now())
 
@@ -62,4 +62,4 @@ class BillingCycleORM(DBBase):
     id = Column(INTEGER(), autoincrement=True, primary_key=True)
     status = Column(ENUM(*Status.display_values(), name='Тип цикла'))
     payment = Column(ForeignKey('payments.id'), nullable=True)
-    created_at = Column(TIMESTAMP, server_default=func.now())
+    created_at = Column(TIMESTAMP, server_default=func.now(), nullable=True)

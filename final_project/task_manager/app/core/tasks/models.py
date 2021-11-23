@@ -38,7 +38,7 @@ class TaskORM(DBBase):
     __tablename__ = "tasks"
 
     id = Column(INTEGER(), autoincrement=True, primary_key=True)
-    status = Column(ENUM(*StatusEnum.display_values(), name='Role'), doc="Тип роли")
+    status = Column(ENUM(*StatusEnum.display_values(), name='Status'), doc="Статус задачи")
     public_id = Column(UUID(as_uuid=True), default=uuid.uuid4)
 
     assignee_id = Column(INTEGER(), ForeignKey("workers.id"))

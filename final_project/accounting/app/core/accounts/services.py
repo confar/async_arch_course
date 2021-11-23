@@ -21,20 +21,22 @@ class AccountService:
     async def process_assigned_task(self, task_id: str, account_id: str) -> TaskORM:
         task = await self.repository.get_task_by_id(task_id)
         account = await self.repository.get_account_by_id(account_id)
-        transaction = await self.repository.apply_withdrawal_transaction(task=task, account=account)
-        await self.repository.change_account_balance(account, transaction)
-        return task
+        if task and account:
+            transaction = await self.repository.apply_withdrawal_transaction(task=task, account=account)
+            await self.repository.change_account_balance(account, transaction)
+            return task
 
     async def process_completed_task(self, task_id: str, account_id: str) -> TaskORM:
         task = await self.repository.get_task_by_id(task_id)
         account = await self.repository.get_account_by_id(account_id)
-        transaction = await self.repository.apply_deposit_transaction(task=task, account=account)
-        await self.repository.change_account_balance(account, transaction)
-        return task
+        if task and account:
+            transaction = await self.repository.apply_deposit_transaction(task=task, account=account)
+            await self.repository.change_account_balance(account, transaction)
+            return task
 
     async def close_billing_cycles(self) -> None:
         cycle_ids = await self.repository.get_cycle_ids_for_today()
-        accounts = await self.repository.get_accounts_for_cycle_ids(cycle_ids=cycle_ids)
+        accounts = await self.repository.get_accounts_for_cycle_ids(cycle_ids=list(cycle_ids))
         for account in accounts:
             current_cycle = await self.repository.get_cycle_by_id(cycle_id=account.current_billing_cycle_id)
             if account.balance <= 0:
@@ -75,5 +77,6 @@ class AccountService:
         if account.role not in ACCOUNTING_ADMIN_ROLES:
             raise NotSufficientPrivileges()
         cycle_ids = await self.repository.get_cycle_ids_for_today()
-        transactions = await self.repository.get_account_transactions_for_cycle_ids(cycle_ids=cycle_ids)
+        cycle_ids = list(cycle_ids)
+        transactions = await self.repository.get_account_transactions_for_cycle_ids(cycle_ids)
         return sum(transaction.delta for transaction in transactions) * -1

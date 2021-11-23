@@ -1,5 +1,5 @@
 import asyncio
-import aiosmtplib
+# import aiosmtplib
 import sys
 
 from email.mime.multipart import MIMEMultipart
@@ -60,26 +60,10 @@ async def send_mail_async(sender, to, subject, text, textType='plain', **params)
 
     # Contact SMTP server and send Message
     host = mail_params.get('host', 'localhost')
-    smtp = aiosmtplib.SMTP(hostname=host, port=25, use_tls=False)
+    smtp = None
+    # smtp = aiosmtplib.SMTP(hostname=host, port=25, use_tls=False)
     await smtp.connect()
     if 'user' in mail_params:
         await smtp.login(mail_params['user'], mail_params['password'])
     await smtp.send_message(msg)
     await smtp.quit()
-
-
-if __name__ == "__main__":
-    email = "xxxxxxxx";
-    co1 = send_mail_async(email,
-                          [email],
-                          "Test 1",
-                          'Test 1 Message',
-                          textType="plain")
-    co2 = send_mail_async(email,
-                          [email],
-                          "Test 2",
-                          'Test 2 Message',
-                          textType="plain")
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(asyncio.gather(co1, co2))
-    loop.close()
