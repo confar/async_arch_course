@@ -17,7 +17,7 @@ loop = asyncio.get_event_loop()
 async def consume():
     app = get_app()
     consumer = AIOKafkaConsumer(
-        'users.registered',
+        'users.created',
         group_id="my_group",
         bootstrap_servers='localhost:9092',
     )
@@ -27,8 +27,8 @@ async def consume():
     try:
         async for msg in consumer:
             data = json.loads(msg.value)
-            if msg.topic == 'users.registered':
-                await task_service.create_worker(public_id=data['public_id'], role=data['role'])
+            if msg.topic == 'users.created':
+                await task_service.create_worker(public_id=data['user_id'], role=data['role'])
     finally:
         pass
 

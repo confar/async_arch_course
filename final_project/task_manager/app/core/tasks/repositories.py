@@ -86,7 +86,7 @@ class TaskEventRepository:
 
     async def produce_task_assigned_event(self, task_id: int, user_id: int, description: str):
         await self.producer.start()
-        data = {"task_id": task_id, "user_id": user_id, "description": description}
+        data = {"task_id": task_id, "user_id": user_id}
         try:
             await self.producer.send_and_wait("tasks.assigned", data)
         finally:
@@ -102,7 +102,7 @@ class TaskEventRepository:
 
     async def produce_task_created_event(self, task_id, user_id, description):
         await self.producer.start()
-        data = {"task_id": task_id, "user_id": user_id, "description": description}
+        data = {"task_id": task_id, "description": description}
         try:
             await self.producer.send_and_wait("tasks.created", data)
         finally:

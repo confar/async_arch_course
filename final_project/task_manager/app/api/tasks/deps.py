@@ -1,20 +1,16 @@
 from typing import NoReturn, Union
 
-from sqlalchemy.exc import NoResultFound
-
-from app.api.base_deps import get_db_client
-from app.api.tasks.serializers import UserSerializer
-
-from app.api.base_deps import get_kafka_client
-from app.core.tasks.models import TaskORM
-from app.core.tasks.services import TaskService
-from app.database import Database
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from starlette import status
 
+from app.api.base_deps import get_db_client
+from app.api.base_deps import get_kafka_client
+from app.core.tasks.models import TaskORM
 from app.core.tasks.repositories import TaskRepository, TaskEventRepository
+from app.core.tasks.services import TaskService
+from app.database import Database
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"

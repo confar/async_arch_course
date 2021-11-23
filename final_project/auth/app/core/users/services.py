@@ -28,7 +28,7 @@ class UserService:
             user = await self.repository.get_user(username)
         except NoResultFound:
             user = await self.repository.create_user(username, self.hashed_password(password))
-            await self.event_repository.produce_user_registered_event(public_id=user.public_id, role=user.role)
+            await self.event_repository.produce_user_registered_event(public_id=user.public_id, role=user.role , email=user.email)
         else:
             if not self.verify_password(password, user.password_hash):
                 return False

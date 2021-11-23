@@ -43,13 +43,13 @@ class UserEventRepository:
     def serializer(value):
         return json.dumps(value).encode()
 
-    async def produce_user_registered_event(self, public_id: UUID, role):
+    async def produce_user_registered_event(self, public_id: UUID, role: str, email: str):
         producer = aiokafka.AIOKafkaProducer(bootstrap_servers='localhost:9092',
                                              value_serializer=self.serializer,
                                              compression_type="gzip")
         await producer.start()
-        data = {"public_id": public_id.hex, "role": role}
+        data = {"user_id": public_id.hex, "role": role, "email": email}
         try:
-            await producer.send_and_wait("users.registered", data)
+            await producer.send_and_wait("users.created", data)
         finally:
             await producer.stop()
