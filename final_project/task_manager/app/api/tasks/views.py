@@ -4,6 +4,8 @@ from app.api.tasks.deps import get_task_service, get_current_user, get_task_or_4
 from app.api.tasks.serializers import UserSerializer, TaskSerializer, AddTaskSerializer
 from app.core.tasks.services import TaskNotOwnedError, NotSufficientPrivileges
 
+from app.core.tasks.services import TaskNotOpenError
+
 router = APIRouter()
 
 
