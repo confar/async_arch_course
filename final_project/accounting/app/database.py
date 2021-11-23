@@ -1,6 +1,6 @@
 import logging
 from asyncio import current_task
-from contextlib import AbstractContextManager, asynccontextmanager
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import Any, AsyncGenerator, Callable
 
@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import (
     async_scoped_session,
     create_async_engine,
 )
-from sqlalchemy.ext.declarative import ConcreteBase, declarative_base
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
@@ -21,12 +21,6 @@ class Base:
     def get_real_column_name(cls, attr_name: str) -> str:
         return getattr(inspect(cls).c, attr_name).name
 
-
-DBLBase: ConcreteBase = declarative_base(cls=Base)
-DBHBase: ConcreteBase = declarative_base(cls=Base)
-
-
-DBSessionFactory = Callable[..., AbstractContextManager[Session]]
 
 
 @dataclass

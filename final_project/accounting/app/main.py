@@ -1,18 +1,28 @@
 import asyncio
+import json
 import logging
 import sys
+from typing import Any
 
+import aiokafka
 import uvloop
+from aiokafka import AIOKafkaConsumer
 from fastapi import FastAPI, __version__
 from loguru import logger
 
-from task_manager.app.api import api_router
-from task_manager.app.database import Database, DBHBase, DBLBase
-from task_manager.app.log_handler import InterceptHandler
-from task_manager.settings.config import LogTypeEnum, Settings, get_settings
+from app.api import api_router
+from app.core.tasks.repositories import AccountRepository, AccountEventRepository
+from app.core.tasks.services import TaskService
+from app.database import Database
+from app.log_handler import InterceptHandler
+from settings.config import LogTypeEnum, Settings, get_settings
+
+from app.core.tasks.models import DBBase
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
+def serializer(value):
+    return json.dumps(value).encode()
 
 class Application:
     def setup(self) -> FastAPI:
@@ -29,6 +39,7 @@ class Application:
         )
         self.app.state.config = settings
         self.create_database_pool(settings)
+        self.create_broker_pool()
         self.configure_logging(settings)
 
         self.register_urls()
@@ -70,23 +81,24 @@ class Application:
         self.app.add_event_handler("startup", self.create_tables)
         self.app.add_event_handler("shutdown", self.close_database_pool)
 
+
     def register_urls(self) -> None:
         self.app.include_router(api_router, prefix="/api")
 
     def create_database_pool(self, settings: Settings) -> None:
         databases = {}
-        for db_alias in settings.MYSQL_DB_READABLE_NAMES:
-            uri = getattr(settings, f"{db_alias.upper()}_SQLALCHEMY_DATABASE_URI")
-            pool_size = getattr(settings, f"{db_alias.upper()}_MYSQL_POOL_SIZE")
-            db = Database(
-                db_connect_url=uri,
-                db_alias=db_alias,
-                connect_kwargs=dict(**Database.CONNECT_KWARGS, pool_size=pool_size),
-                debug=settings.DEBUG,
-            )
-            logger.info("creating database connection for {}", db_alias)
-            setattr(self.app.state, db_alias, db)
-            databases[db_alias] = db
+        db_alias = 'db'
+        uri = settings.DB_SQLALCHEMY_DATABASE_URI
+        pool_size = settings.DB_POOL_SIZE
+        db = Database(
+            db_connect_url=uri,
+            db_alias=db_alias,
+            connect_kwargs=dict(**Database.CONNECT_KWARGS, pool_size=pool_size),
+            debug=settings.DEBUG,
+        )
+        logger.info("creating database connection for {}", db_alias)
+        setattr(self.app.state, db_alias, db)
+        databases[db_alias] = db
         self.app.state.databases = databases
 
     async def close_database_pool(self) -> None:
@@ -99,8 +111,17 @@ class Application:
                 continue
 
     async def create_tables(self) -> None:
-        await self.app.state.dbl.create_tables_by_base(DBLBase)
-        await self.app.state.dbh.create_tables_by_base(DBHBase)
+        await self.app.state.db.create_tables_by_base(DBBase)
+
+    @staticmethod
+    def serializer(value):
+        return json.dumps(value).encode()
+
+    def create_broker_pool(self):
+        producer = aiokafka.AIOKafkaProducer(bootstrap_servers='localhost:9092',
+                                             value_serializer=self.serializer,
+                                             compression_type="gzip")
+        self.app.state.event_producer = producer
 
 
 def get_app() -> FastAPI:
