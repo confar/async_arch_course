@@ -2,17 +2,13 @@ import asyncio
 import json
 import logging
 import sys
-from typing import Any
 
 import aiokafka
 import uvloop
-from aiokafka import AIOKafkaConsumer
 from fastapi import FastAPI, __version__
 from loguru import logger
 
 from app.api import api_router
-from app.core.tasks.repositories import TaskRepository, TaskEventRepository
-from app.core.tasks.services import TaskService
 from app.database import Database
 from app.log_handler import InterceptHandler
 from settings.config import LogTypeEnum, Settings, get_settings
@@ -20,6 +16,7 @@ from settings.config import LogTypeEnum, Settings, get_settings
 from app.core.tasks.models import DBBase
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 def serializer(value):
     return json.dumps(value).encode()
@@ -39,7 +36,8 @@ class Application:
         )
         self.app.state.config = settings
         self.create_database_pool(settings)
-        self.create_broker_pool()
+        loop = asyncio.get_event_loop()
+        self.create_broker_pool(loop)
         self.configure_logging(settings)
 
         self.register_urls()
@@ -117,10 +115,10 @@ class Application:
     def serializer(value):
         return json.dumps(value).encode()
 
-    def create_broker_pool(self):
+    def create_broker_pool(self, loop):
         producer = aiokafka.AIOKafkaProducer(bootstrap_servers='localhost:9092',
                                              value_serializer=self.serializer,
-                                             compression_type="gzip")
+                                             compression_type="gzip", loop=loop)
         self.app.state.event_producer = producer
 
 

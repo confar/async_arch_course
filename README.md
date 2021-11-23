@@ -5,21 +5,27 @@
 cd final_project
 
 поднимаем кафку
-docker-compose up
+docker-compose up -d
 
 поднимаем сервис аутентификации:
-cd auth
-база в докере: docker-compose -f docker-compose.local.yml up  
-приложение: ENV_FILE=settings.env python app/main.py
+- cd auth
+- база в докере: docker-compose -f docker-compose.local.yml up  -d
+- poetry install
+- cp settings/.env.template settings/.env
+- приложение: ENV_FILE=settings/.env poetry run python main.py
 
 поднимаем сервис тасков:
-cd ../task_manager
-база в докере: docker-compose -f docker-compose.local.yml up  
-приложение: ENV_FILE=settings.env python app/main.py
-консьюмер евентов: ENV_FILE=settings.env python app/event_consumer/main.py
+- cd ../task_manager
+- база в докере: docker-compose -f docker-compose.local.yml up
+- poetry install
+- cp settings/.env.template settings/.env
+- приложение: ENV_FILE=settings/.env poetry run python main.py
+- консьюмер евентов: ENV_FILE=settings/.env poetry run python event_consumer_main.py
 
 поднимаем сервис биллинга/аналитики:
-cd ../accounting
-база в докере: docker-compose -f accounting/docker-compose.local.yml up  
-приложение: ENV_FILE=settings.env python app/main.py
-консьюмер евентов: ENV_FILE=settings.env python app/event_consumer/main.py
+- cd ../accounting
+- база в докере: docker-compose -f docker-compose.local.yml up  
+- poetry install
+- cp settings/.env.template settings/.env
+- приложение: ENV_FILE=settings/.env poetry run python main.py
+- консьюмер евентов: ENV_FILE=settings/.env poetry run python event_consumer_main.py

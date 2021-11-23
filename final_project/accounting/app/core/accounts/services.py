@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from app.core.accounts.constants import ACCOUNTING_ADMIN_ROLES, ADMIN_ROLES
 from app.core.accounts.models import TransactionORM, AccountORM, TaskORM
-from app.core.accounts.repositories import AccountRepository, AccountEventRepository
+from app.core.accounts.repositories import AccountRepository
 from app.emails import send_mail_async
 
 

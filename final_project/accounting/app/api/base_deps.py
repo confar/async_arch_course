@@ -20,7 +20,7 @@ from starlette import status
 
 from app.api.base_deps import get_db_client
 from app.api.base_deps import get_kafka_client
-from app.core.accounts.repositories import AccountRepository, AccountEventRepository
+from app.core.accounts.repositories import AccountRepository
 from app.core.accounts.services import AccountService
 from app.database import Database
 
