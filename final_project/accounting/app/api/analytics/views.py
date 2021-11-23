@@ -6,7 +6,7 @@ from app.api.analytics.serializers import AnalyticsDashboardSerializer, MostExpe
 from app.api.base_deps import get_analytics_service, get_current_account
 from starlette import status
 
-from final_project.accounting.app.core.analytics.services import NotSufficientPrivileges
+from app.core.analytics.services import NotSufficientPrivileges
 
 router = APIRouter()
 

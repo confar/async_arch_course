@@ -4,7 +4,7 @@ from app.api.accounts.serializers import UserSerializer, TaskSerializer, Transac
 from app.api.base_deps import get_current_account, get_account_service
 from starlette import status
 
-from final_project.accounting.app.core.accounts.services import NotSufficientPrivileges
+from app.core.accounts.services import NotSufficientPrivileges
 
 router = APIRouter()
 
